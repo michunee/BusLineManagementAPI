@@ -2,13 +2,16 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Province } from './province';
+import { Route } from './route';
 
-@Entity({ name: 'Station' })
-export class Station {
+@Entity({ name: 'RestArea' })
+export class RestArea {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -24,4 +27,8 @@ export class Station {
   @ManyToOne(() => Province)
   @JoinColumn({ name: 'ProvinceID' })
   province: Province;
+
+  @ManyToMany(() => Route)
+  @JoinTable({ name: 'RouteRestArea' })
+  routes: Route[];
 }
