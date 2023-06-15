@@ -1,43 +1,49 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'Driver' })
-export class Driver {
+export class Driver extends BaseEntity {
   @PrimaryGeneratedColumn()
   ID: number;
 
   @Column({ type: 'varchar', length: 50 })
   Name: string;
 
-  @Column()
-  IdCard: number;
+  @Column({ type: 'varchar', length: 12 })
+  CardID: string;
 
   @Column({ type: 'varchar', length: 10 })
   Gender: string;
 
-  @Column({ type: 'date' })
-  DateOfBirth: Date;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  Email: string | null;
-
   @Column({ type: 'varchar', length: 10 })
-  Phone: string;
-
-  @Column({ type: 'varchar', length: 100 })
-  Address: string;
+  Phonenumber: string;
 
   @Column({ default: true })
   IsActive: boolean;
 
-  @Column({ type: 'varchar', length: 15 })
-  LicenseNumber: string;
+  @Column({ type: 'varchar', length: 10 })
+  LicenseNo: string;
+
+  @CreateDateColumn()
+  AddedDate: Date;
+
+  @Column({ type: 'varchar', length: 5, nullable: true })
+  LicenseClass: string;
+
+  @Column({ type: 'date', nullable: true })
+  LicenseDate: Date;
+
+  @Column({ type: 'date', nullable: true })
+  LicenseExpiredDate: Date;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  Note: string | null;
-
-  @Column({ type: 'date' })
-  JoinedDate: Date;
+  Address: string;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
-  ImageUrl: string | null;
+  Note: string | null;
 }

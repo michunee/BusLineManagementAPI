@@ -1,52 +1,82 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Module, ValidationPipe } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProvinceModule } from './modules/province.module';
 import { StationModule } from './modules/station.module';
-import { RestAreaModule } from './modules/restArea.module';
-import { RouteModule } from './modules/route.module';
 import { DriverModule } from './modules/driver.module';
-import { PassengerModule } from './modules/passenger.module';
 import { PersonModule } from './modules/person.module';
 import { RoleModule } from './modules/role.module';
-import { NotificationModule } from './modules/notification.module';
-import { TimeSheetModule } from './modules/timeSheet.module';
 import { BusTypeModule } from './modules/busType.module';
 import { BusModule } from './modules/bus.module';
 import { BusSeatModule } from './modules/busSeat.module';
 import { TripModule } from './modules/trip.module';
 import { TicketModule } from './modules/ticket.module';
+import { APP_PIPE } from '@nestjs/core';
+import { PaypalModule } from './modules/paypal.module';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgres://michu:vx8Y8QJbX9evHVbJOjoRdxypR5UZlZRD@dpg-cghfcot269v15elqj710-a.singapore-postgres.render.com/buslinemanagement_kzwd',
-      ssl: true,
+      host: process.env.HOST,
+      port: parseInt(process.env.PORT),
+      username: process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
     }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        transport: {
+          host: config.get('MAIL_HOST'),
+          secure: false,
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: `"TravelBus" <${config.get('MAIL_USER')}>`,
+        },
+        template: {
+          dir: join(__dirname, 'src/templates/email'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ProvinceModule,
     StationModule,
-    RestAreaModule,
-    RouteModule,
     DriverModule,
-    PassengerModule,
     PersonModule,
     RoleModule,
-    NotificationModule,
-    TimeSheetModule,
     BusTypeModule,
     BusModule,
     BusSeatModule,
     TripModule,
     TicketModule,
+    PaypalModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: false,
+      }),
+    },
+  ],
 })
 export class AppModule {}

@@ -1,14 +1,17 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BusType } from './busType';
+import { Ticket } from './ticket';
 
 @Entity({ name: 'BusSeat' })
-export class BusSeat {
+export class BusSeat extends BaseEntity {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -21,4 +24,7 @@ export class BusSeat {
   @ManyToOne(() => BusType)
   @JoinColumn({ name: 'BusTypeID' })
   busType: BusType;
+
+  @ManyToMany(() => Ticket, (ticket) => ticket.busSeats)
+  tickets: Ticket[];
 }

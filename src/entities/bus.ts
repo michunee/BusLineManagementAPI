@@ -1,5 +1,7 @@
 import {
+  BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -8,11 +10,11 @@ import {
 import { BusType } from './busType';
 
 @Entity({ name: 'Bus' })
-export class Bus {
+export class Bus extends BaseEntity {
   @PrimaryGeneratedColumn()
   ID: number;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 100 })
   Name: string;
 
   @Column({ type: 'varchar', length: 10 })
@@ -24,10 +26,10 @@ export class Bus {
   @Column({ type: 'varchar', length: 200, nullable: true })
   Note: string | null;
 
-  @Column({ type: 'timestamp' })
-  CreatedDate: Date;
+  @CreateDateColumn()
+  AddedDate: Date;
 
-  @Column({ type: 'varchar', length: 200, nullable: true })
+  @Column({ type: 'varchar', length: 1000, nullable: true })
   ImageUrl: string | null;
 
   @Column()

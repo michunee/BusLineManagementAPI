@@ -11,7 +11,7 @@ export class ProvinceController {
   }
 
   @Get()
-  public getCities() {
+  public getProvinces() {
     return this.service.getProvinces();
   }
 }

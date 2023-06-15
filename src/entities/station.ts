@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -8,7 +9,7 @@ import {
 import { Province } from './province';
 
 @Entity({ name: 'Station' })
-export class Station {
+export class Station extends BaseEntity {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -20,6 +21,12 @@ export class Station {
 
   @Column()
   ProvinceID: number;
+
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  Note: string;
+
+  @Column({ default: true })
+  IsActive: boolean;
 
   @ManyToOne(() => Province)
   @JoinColumn({ name: 'ProvinceID' })

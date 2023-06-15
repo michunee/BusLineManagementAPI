@@ -1,7 +1,7 @@
-import { Province } from 'src/entities/province';
+import { GetProvinceCommand } from './command/getProvince.command';
 
 export class ProvinceService {
   public getProvinces() {
-    return Province.find();
+    return GetProvinceCommand.get();
   }
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BusSeat } from './busSeat';
 
 @Entity({ name: 'BusType' })
 export class BusType {
@@ -10,4 +11,7 @@ export class BusType {
 
   @Column()
   SeatNum: number;
+
+  @OneToMany(() => BusSeat, (busSeat) => busSeat.busType)
+  busSeats: BusType[];
 }

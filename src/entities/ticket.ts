@@ -1,17 +1,19 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Passenger } from './passenger';
 import { Trip } from './trip';
-import { Bus } from './bus';
 import { BusSeat } from './busSeat';
+import { Person } from './person';
 
 @Entity({ name: 'Ticket' })
-export class Ticket {
+export class Ticket extends BaseEntity {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -19,33 +21,23 @@ export class Ticket {
   TripID: number | null;
 
   @Column({ nullable: true })
-  PassengerID: number | null;
-
-  @Column({ nullable: true })
-  BusID: number | null;
-
-  @Column({ nullable: true })
-  BusSeatID: number | null;
-
-  @Column({ nullable: true })
-  Price: number | null;
+  PersonID: number | null;
 
   @Column({ type: 'timestamp' })
   BoughtDate: Date;
+
+  @Column()
+  TotalPrice: number;
 
   @ManyToOne(() => Trip, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'TripID' })
   trip: Trip | null;
 
-  @ManyToOne(() => Passenger, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'PassengerID' })
-  passenger: Passenger | null;
+  @ManyToOne(() => Person, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'PersonID' })
+  person: Person | null;
 
-  @ManyToOne(() => Bus, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'BusID' })
-  bus: Bus | null;
-
-  @ManyToOne(() => BusSeat, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'BusSeatID' })
-  busSeat: BusSeat | null;
+  @ManyToMany(() => BusSeat, (busSeat) => busSeat.tickets)
+  @JoinTable({ name: 'BusSeatTicket' })
+  busSeats: BusSeat[];
 }
